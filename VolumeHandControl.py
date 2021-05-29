@@ -31,9 +31,11 @@ volume = cast(interface, POINTER(IAudioEndpointVolume))
 
 # volume.GetMute()
 # volume.GetMasterVolumeLevel()
-print( volume.GetVolumeRange())
-# volume.SetMasterVolumeLevel(-20.0, None)
+# print( volume.GetVolumeRange())
+volume.SetMasterVolumeLevel(-65.25, None)
+volRange = volume.GetVolumeRange()
 
+vol =0
 
 
 ###############################
@@ -68,13 +70,33 @@ while True:
         cv2.circle(img,(x2,y2),5,(0,0,255),2)
 
         cv2.line(img,(x1,y1),(x2,y2),(255,0,255),2)
+
+        ## Hacerlo bien:
+        minvol = volRange[0]
+        maxvol = volRange[1]
+
+        vol = np.interp(length,[50,150],[minvol,maxvol])
+        print(vol)
+
+        # int_length = (length//10)+1
+        # print(f'int_length::{int_length}')
+        # cooficiente = 1/int_length
+        # print(f'cooficiente::{cooficiente}')
+        #
+        # vol = cooficiente * (-65.25)
+        # print (vol)
+
+
+
+        volume.SetMasterVolumeLevel(vol, None)
+
         if (int(length//10)) < 2:
-            print ('pequeño')
+            #print ('pequeño')
             cv2.circle(img,(cx,cy),5,(255,255,255),2)
         else:
-            print('grande')
+            #print('grande')
             cv2.circle(img, (cx, cy), 5, (0, 255, 0), 2)
-    cv2.putText(img, f'FPS::{int(fps)}', (40, 50), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 0, 255), 2)
+    # cv2.putText(img, f'FPS::{int(fps)}', (40, 50), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 0, 255), 2)
 
     cv2.imshow("img",img)
     cv2.waitKey(1)
